@@ -8,7 +8,7 @@ import sys
 sys.path.append(osp.join(sys.path[0], '..'))
 import time
 import torch
-torch.backends.cudnn.enabled = False
+#torch.backends.cudnn.enabled = False
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -56,7 +56,7 @@ def parse_args():
 
 def main():
     # 设置GPU, mu
-    # os.environ["CUDA_VISIBLE_DEVICES"]="1,2,3"
+    os.environ["CUDA_VISIBLE_DEVICES"]="0,4,5"
 
     args = parse_args()
     cfg = Config.fromfile(args.config)
