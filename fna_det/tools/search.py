@@ -8,6 +8,7 @@ import sys
 sys.path.append(osp.join(sys.path[0], '..'))
 import time
 import torch
+torch.backends.cudnn.enabled = False
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
