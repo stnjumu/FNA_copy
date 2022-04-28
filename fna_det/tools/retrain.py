@@ -55,6 +55,9 @@ def parse_args():
 
 
 def main():
+    # 设置GPU, mu
+    os.environ["CUDA_VISIBLE_DEVICES"]="3,4,5"
+    
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
