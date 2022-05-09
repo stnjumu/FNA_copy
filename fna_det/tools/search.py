@@ -59,18 +59,21 @@ def main():
     os.environ["CUDA_VISIBLE_DEVICES"]="3,4,5"
 
     args = parse_args()
-    cfg = Config.fromfile(args.config)
+    cfg = Config.fromfile(args.config) # 'mmcv.utils.config.ConfigDict'类型，是dict的子类；
     
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
     # update configs according to CLI args
+    # 输出文件夹
     if args.work_dir is not None:
-        if args.job_name is '':
+        if args.job_name is '':                             # TODO: 命令行参数：现在是output，之后可改为其他名称;
             args.job_name = 'output'
         else:
             args.job_name = time.strftime("%Y%m%d-%H%M%S-") + args.job_name
         cfg.work_dir = osp.join(args.work_dir, args.job_name)
+    
+    # 继续训练，命令行参数和config都有，前者优先；
     if args.resume_from is not None:
         cfg.resume_from = args.resume_from
     cfg.gpus = args.gpus
@@ -85,12 +88,13 @@ def main():
         init_dist(args.launcher, **cfg.dist_params)
 
     # init logger before other steps
-    utils.create_work_dir(cfg.work_dir)
+    utils.create_work_dir(cfg.work_dir) # 这个函数在tools/utils.py, 依赖mmcv
     logger = utils.get_root_logger(cfg.work_dir, cfg.log_level)
     logger.info('Distributed training: {}'.format(distributed))
     logger.info('Search args: \n'+str(args))
     logger.info('Search configs: \n'+str(cfg))
 
+    # ?? 这句什么用
     if cfg.checkpoint_config is not None:
         # save mmdet version in checkpoints as meta data
         cfg.checkpoint_config.meta = dict(
@@ -101,8 +105,11 @@ def main():
         logger.info('Set random seed to {}'.format(args.seed))
         set_random_seed(args.seed)
     
+    # 这句就是把cfg.data中数据集的相对路径前面加上args中的数据集路径，即绝对路径；
     utils.set_data_path(args.data_path, cfg.data)
 
+    # 构建检测器
+    # TODO: 做到这了
     model = build_detector(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
     model.backbone.get_sub_obj_list(cfg.sub_obj, (1, 3,)+cfg.image_size_madds)

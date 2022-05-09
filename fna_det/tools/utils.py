@@ -18,7 +18,7 @@ def set_data_path(data_root, data_cfg):
     def add_root(root, path):
         return osp.join(root, path)
 
-    for _, v in data_cfg.items():
+    for _, v in data_cfg.items(): # .items返回字典的可迭代元组列表
         if isinstance(v, dict):
             if hasattr(v, 'ann_file'):
                 v.ann_file = add_root(data_root, v.ann_file) 

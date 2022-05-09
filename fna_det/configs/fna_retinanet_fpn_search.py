@@ -1,7 +1,7 @@
 # model settings
 type = 'Retinanet'
 model = dict(
-    type='NASRetinaNet',
+    type='NASRetinaNet', # see fna_base_backbone.py, fna_retinanet_backbone.py, fna_retinanet_detector.py
     pretrained=dict(
         use_load=True,
         load_path='./seed_mbv2.pt',        
