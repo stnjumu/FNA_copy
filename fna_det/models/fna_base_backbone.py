@@ -25,6 +25,8 @@ class MixedOp(nn.Module):
             self._ops.add_module('{}'.format(primitive), op)
 
     def forward(self, x, weights, branch_indices, mixed_sub_obj):
+        # 堆叠模块，由于模块的输出相同，所以可以用stack，stack会增加一维，例如5个3*3的tensor会堆叠成5*3*3的tensor，默认在dim=0表示新维度在前面
+        # ?: weights是什么；
         op_weights = torch.stack([weights[branch_index] for branch_index in branch_indices])
         op_weights = F.softmax(op_weights, dim=-1)
         return sum(op_weight * getattr(self._ops, self.primitives[branch_index])(x) for branch_index, op_weight in zip(
