@@ -126,4 +126,6 @@ log_level = 'INFO'
 work_dir = './work_dirs/retinanet_FNA_fpn_1x'
 load_from = None
 resume_from = None
-workflow = [('train', 1)]
+# workflow用于训练中是否验证，[('train', 1),('val', 1)]表示训练和验证交替进行
+# 注意我观察本项目代码还没有实现验证相关代码
+workflow = [('train', 1)] 
