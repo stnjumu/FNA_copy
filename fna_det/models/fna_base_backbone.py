@@ -26,9 +26,11 @@ class MixedOp(nn.Module):
 
     def forward(self, x, weights, branch_indices, mixed_sub_obj):
         # 堆叠模块，由于模块的输出相同，所以可以用stack，stack会增加一维，例如5个3*3的tensor会堆叠成5*3*3的tensor，默认在dim=0表示新维度在前面
-        # ?: weights是什么；
+        # ?: 可能由于weights不是tensor??，否则为什么堆叠，直接用不就好了。。。
+        # weights是什么: 应该是该层的结构参数，通过stack将参数放到一起，再整体加个softmax做归一化；
+        # 对参数做softmax使权和为0，注意不是给运算结果加softmax，那个是想使结果为概率分布，不是这里想要的。
         op_weights = torch.stack([weights[branch_index] for branch_index in branch_indices])
-        op_weights = F.softmax(op_weights, dim=-1)
+        op_weights = F.softmax(op_weights, dim=-1) # dim = -1表示最后一维，与上面的dim=0不统一，可能是因为这里op_weights只有一维。。。
         return sum(op_weight * getattr(self._ops, self.primitives[branch_index])(x) for branch_index, op_weight in zip(
                     branch_indices, op_weights)), \
                 sum(op_weight * mixed_sub_obj[branch_index] for branch_index, op_weight in zip(

@@ -71,6 +71,9 @@ class ArchOptimizerHook(OptimizerHook):
 
 
 class ArchDistOptimizerHook(ArchOptimizerHook):
+    # arch param optimize hook
+    # 会注册两个优化器hook，这个是自定义的结构参数优化器
+    # 在tools/apis/fna_search_apis.py中NASRunner.init_nas_optimizer()中为两个优化器初始化；分配的待优化参数
 
     def __init__(self, grad_clip=None, coalesce=True, bucket_size_mb=-1):
         self.grad_clip = grad_clip
