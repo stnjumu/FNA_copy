@@ -355,8 +355,9 @@ class NASRunner(Runner):
 
     def call_hook(self, fn_name, mode='train'):
         hooks_run = self._hooks if mode=='train' else self._arch_hooks
-        for hook in hooks_run:
-            getattr(hook, fn_name)(self)
+        for hook in hooks_run: # 遍历所有hook，调用他们的名为'fn_name'的方法；只有重写了该方法的hook会有所动作，默认只是pass（见Hook类），所以可以实现调用该类hook的作用
+            # 可见，实现对应方法的hook就会在对应时刻运行该方法；显然一个hook可以实现多个方法，实现在多个时间段运行；
+            getattr(hook, fn_name)(self) # getattr获得对象属性，如getattr(a,'y')等价于a.y，只是可以用字符串作为参数，显然此方法更为方便。
 
 
     def load_checkpoint(self, filename, map_location='cpu', strict=True):

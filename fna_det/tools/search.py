@@ -109,16 +109,18 @@ def main():
     utils.set_data_path(args.data_path, cfg.data)
 
     # 构建检测器
-    # TODO: 做到这了
     model = build_detector(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
+    # models/fna_retinanet_detector.py BaseBackbone.get_sub_obj_list，可能与优化目标有关，可能是小trick
     model.backbone.get_sub_obj_list(cfg.sub_obj, (1, 3,)+cfg.image_size_madds)
 
-    if cfg.use_syncbn:
+    if cfg.use_syncbn: # FALSE
         model = utils.convert_sync_batchnorm(model)
 
+    # train_data_ratio=0.5, 搜索和训练数据集不同；
     arch_dataset, train_dataset = build_divide_dataset(cfg.data, part_1_ratio=cfg.train_data_ratio)
 
+    # TODO: 做到这了；
     search_detector(model, 
                     (arch_dataset, train_dataset),
                     cfg,

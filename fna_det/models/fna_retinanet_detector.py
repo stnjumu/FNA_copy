@@ -3,7 +3,7 @@ from mmdet.models.detectors.retinanet import RetinaNet
 from mmdet.models.registry import DETECTORS
 
 
-@DETECTORS.register_module
+@DETECTORS.register_module # 利用装饰器，在import时就已经注册
 class NASRetinaNet(RetinaNet):
 
     def extract_feat(self, img):
